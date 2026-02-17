@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
 import SplashPage from './components/SplashPage';
-import Dashboard from './components/Dashboard';
+import EnhancedDashboard from './components/EnhancedDashboard';
+import { AppProvider } from './context/AppContext';
 import './styles/tactical.css';
 
 function App() {
   const [isLaunched, setIsLaunched] = useState(false);
+  const [agentName, setAgentName] = useState('AGENT SUVANWIT');
+
+  const handleLaunch = (username) => {
+    setAgentName(username || 'AGENT SUVANWIT');
+    setIsLaunched(true);
+  };
 
   const handleLogout = () => {
     setIsLaunched(false);
   };
 
   if (!isLaunched) {
-    return <SplashPage onLaunch={() => setIsLaunched(true)} />;
+    return <SplashPage onLaunch={handleLaunch} />;
   }
 
-  return <Dashboard agentName="AGENT SUVANWIT" onLogout={handleLogout} />;
+  return (
+    <AppProvider>
+      <EnhancedDashboard agentName={agentName} onLogout={handleLogout} />
+    </AppProvider>
+  );
 }
 
 export default App;
