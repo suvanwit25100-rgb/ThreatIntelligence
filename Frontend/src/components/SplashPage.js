@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import {
   Target, Fingerprint, Loader2, Lock, ShieldAlert,
-  AlertTriangle, Terminal, Bomb, MapPin, Radio,
+  AlertTriangle, Terminal, MapPin, Radio,
   RefreshCcw, Zap, Cpu, ShieldCheck
 } from 'lucide-react';
 
@@ -180,27 +180,23 @@ const SplashPage = ({ onLaunch }) => {
     return () => clearTimeout(timeout);
   }, [isDead, isRebooting]);
 
-  // 4. Emergency Sound Control
+  // 4. Emergency Sound Control (simplified)
   useEffect(() => {
-    if (isLocked && destructTimer > 0 && !isDead) {
+    if (isLocked && !isDead) {
       emergencySound.current?.play().catch(() => { });
     } else {
       emergencySound.current?.pause();
       if (emergencySound.current) emergencySound.current.currentTime = 0;
     }
-  }, [isLocked, isDead, destructTimer]);
+  }, [isLocked, isDead]);
 
-  // 5. Self-Destruct Timer
+  // 5. Simplified Timer (no countdown needed)
   useEffect(() => {
-    let timer;
-    if (isLocked && destructTimer > 0 && !isDead) {
-      timer = setInterval(() => setDestructTimer(p => p - 1), 1000);
-    } else if (destructTimer === 0) {
-      setIsDead(true);
-      setSecurityLogs(["> !! CORE_PURGED !!", "> !! DISK_NEUTRALIZED !!", "> !! SYSTEM_VOID !!"]);
+    // Timer state is kept for compatibility but no longer counts down
+    if (isLocked && !isDead) {
+      // Just maintain the locked state without countdown
     }
-    return () => clearInterval(timer);
-  }, [isLocked, destructTimer, isDead]);
+  }, [isLocked, isDead]);
 
   // 6. Reboot Logic
   useEffect(() => {
@@ -890,20 +886,68 @@ const SplashPage = ({ onLaunch }) => {
         </div>
       </div>
 
-      {/* --- KINETIC ALARM OVERLAY --- */}
-      {isLocked && destructTimer > 0 && !isDead && (
-        <div className="absolute inset-0 z-[300] bg-red-950/20 flex flex-col items-center justify-center backdrop-blur-sm font-mono">
-          <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="flex flex-col items-center">
-            <Bomb size={120} className="text-red-600 mb-10 drop-shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
-            <h2 className="text-[12rem] font-black text-red-600 tabular-nums leading-none tracking-tighter">
-              {destructTimer < 10 ? `0${destructTimer}` : destructTimer}
-            </h2>
-            <p className="text-sm font-bold text-red-600 tracking-[1.5em] uppercase mt-4">Emergency_Neutralization</p>
+      {/* --- HEADQUARTERS NOTIFICATION OVERLAY --- */}
+      {isLocked && !isDead && (
+        <div className="absolute inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center backdrop-blur-md font-mono">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl w-full border-2 border-red-600/40 p-12 bg-red-950/10 relative"
+          >
+            {/* Hidden reboot trigger */}
+            <button
+              onClick={() => setIsRebooting(true)}
+              className="absolute bottom-4 right-4 opacity-0 hover:opacity-10 transition-all cursor-default"
+            >
+              <RefreshCcw size={12} />
+            </button>
+
+            {/* Header with icon */}
+            <div className="flex items-center gap-4 mb-8 text-red-600">
+              <Radio className="animate-pulse" size={32} />
+              <h2 className="text-3xl font-black uppercase tracking-tight">
+                Satellite_Uplink_Established
+              </h2>
+            </div>
+
+            {/* Main notification */}
+            <div className="space-y-6 text-sm tracking-wide leading-relaxed">
+              <p className="bg-red-600/10 p-6 border-l-4 border-red-600 text-white uppercase font-bold">
+                UNAUTHORIZED ACCESS ATTEMPT DETECTED. LOCATION AND DEVICE METADATA TRANSMITTED TO NEW DELHI COMMAND.
+              </p>
+
+              {/* Uplink details */}
+              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-red-600/20">
+                <div>
+                  <p className="opacity-40 uppercase mb-2 text-xs">Uplink_Target</p>
+                  <p className="text-white font-bold text-lg">HQ_NEW_DELHI</p>
+                </div>
+                <div className="text-right">
+                  <p className="opacity-40 uppercase mb-2 text-xs">Origin_GPS</p>
+                  <p className="text-white font-bold text-lg">{liveMetrics.lat}N / {liveMetrics.lng}E</p>
+                </div>
+              </div>
+
+              {/* Status indicator */}
+              <div className="pt-6 border-t border-red-600/20 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <motion.div
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="h-3 w-3 bg-red-500 rounded-full shadow-[0_0_10px_rgba(239,68,68,0.8)]"
+                  />
+                  <span className="text-red-500 font-bold uppercase tracking-wider text-xs">
+                    Transmission_Complete
+                  </span>
+                </div>
+                <p className="text-xs text-red-400/60 uppercase">
+                  Attempts: {attempts}/3
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       )}
     </div>
   );
 };
-
-export default SplashPage;
