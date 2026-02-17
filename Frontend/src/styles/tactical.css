@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- TACTICAL COMMAND STYLESHEET --- */
+@layer base {
+  :root {
+    --raw-cyan: #00FFCC;
+    --raw-bg-dim: #01040f;
+    --raw-red: #ef4444;
+  }
+  /* ... rest of your code ... */
+}
