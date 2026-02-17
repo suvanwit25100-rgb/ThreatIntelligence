@@ -627,21 +627,81 @@ const SplashPage = ({ onLaunch }) => {
 
                     {/* Scan Button */}
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setBiometricScan(true);
-                        let progress = 0;
-                        const interval = setInterval(() => {
-                          progress += 5;
-                          setScanProgress(progress);
-                          if (progress >= 100) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                              setAuthStep(2);
-                              setBiometricScan(false);
-                              setScanProgress(0);
-                            }, 500);
+
+                        try {
+                          // Check if WebAuthn is supported
+                          if (!window.PublicKeyCredential) {
+                            // Fallback to simulated scan
+                            let progress = 0;
+                            const interval = setInterval(() => {
+                              progress += 5;
+                              setScanProgress(progress);
+                              if (progress >= 100) {
+                                clearInterval(interval);
+                                setTimeout(() => {
+                                  setAuthStep(2);
+                                  setBiometricScan(false);
+                                  setScanProgress(0);
+                                }, 500);
+                              }
+                            }, 100);
+                            return;
                           }
-                        }, 100);
+
+                          // Simulate progress during Windows Hello prompt
+                          let progress = 0;
+                          const progressInterval = setInterval(() => {
+                            progress = Math.min(progress + 8, 95);
+                            setScanProgress(progress);
+                          }, 150);
+
+                          // Windows Hello Authentication
+                          const publicKeyCredentialCreationOptions = {
+                            challenge: new Uint8Array(32).map(() => Math.floor(Math.random() * 256)),
+                            rp: {
+                              name: "R&AW Intelligence System",
+                              id: window.location.hostname
+                            },
+                            user: {
+                              id: new Uint8Array(16).map(() => Math.floor(Math.random() * 256)),
+                              name: "agent.suvanwit@raw.gov.in",
+                              displayName: "AGENT SUVANWIT"
+                            },
+                            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                            authenticatorSelection: {
+                              authenticatorAttachment: "platform",
+                              userVerification: "required"
+                            },
+                            timeout: 60000,
+                            attestation: "none"
+                          };
+
+                          const credential = await navigator.credentials.create({
+                            publicKey: publicKeyCredentialCreationOptions
+                          });
+
+                          // Success - complete progress
+                          clearInterval(progressInterval);
+                          setScanProgress(100);
+
+                          setTimeout(() => {
+                            setAuthStep(2);
+                            setBiometricScan(false);
+                            setScanProgress(0);
+                          }, 500);
+
+                        } catch (error) {
+                          console.log('Biometric auth error:', error);
+                          // If user cancels or error occurs, still proceed (for demo purposes)
+                          setScanProgress(100);
+                          setTimeout(() => {
+                            setAuthStep(2);
+                            setBiometricScan(false);
+                            setScanProgress(0);
+                          }, 500);
+                        }
                       }}
                       disabled={biometricScan}
                       className="px-16 py-5 bg-[#00FFCC] text-[#020617] font-black uppercase tracking-[0.4em] hover:bg-white transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(0,255,204,0.3)]"
@@ -951,3 +1011,5 @@ const SplashPage = ({ onLaunch }) => {
     </div>
   );
 };
+
+export default SplashPage;

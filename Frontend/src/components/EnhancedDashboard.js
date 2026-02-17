@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X } from 'lucide-react';
+import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X, Mail, ShieldCheck, Folder, Bell } from 'lucide-react';
 import Dashboard from './Dashboard';
 import SearchFilter from './SearchFilter';
 import FilterPanel from './FilterPanel';
@@ -10,6 +10,10 @@ import CountryComparison from './CountryComparison';
 import NewsPanel from './NewsPanel';
 import ReportGenerator from './ReportGenerator';
 import UserPreferences from './UserPreferences';
+import ContactUs from './ContactUs';
+import AdminDashboard from './AdminDashboard';
+import GovernmentFiles from './GovernmentFiles';
+import NotificationCenter from './NotificationCenter';
 import { useApp } from '../context/AppContext';
 
 const EnhancedDashboard = ({ agentName, onLogout }) => {
@@ -19,6 +23,10 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
     const [showReport, setShowReport] = useState(false);
     const [showPreferences, setShowPreferences] = useState(false);
     const [showAnalytics, setShowAnalytics] = useState(false);
+    const [showContact, setShowContact] = useState(false);
+    const [showAdmin, setShowAdmin] = useState(false);
+    const [showGovFiles, setShowGovFiles] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const [activeFilters, setActiveFilters] = useState({});
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -70,6 +78,62 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
                     title="Analytics"
                 >
                     <BarChart3 size={24} color="#00FFCC" />
+                </motion.button>
+
+                {/* Notification Bell Button */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowNotifications(true)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'rgba(255, 165, 0, 0.2)',
+                        border: '2px solid #FFA500',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                        position: 'relative'
+                    }}
+                    title="Notifications"
+                >
+                    <Bell size={24} color="#FFA500" />
+                    {/* Unread indicator */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        background: '#ff0000',
+                        border: '2px solid #020617'
+                    }} />
+                </motion.button>
+
+                {/* Contact Button */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowContact(true)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'rgba(0, 255, 204, 0.1)',
+                        border: '2px solid #00FFCC',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                    }}
+                    title="Contact Us"
+                >
+                    <Mail size={24} color="#00FFCC" />
                 </motion.button>
 
                 {/* Comparison Button */}
@@ -140,6 +204,50 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
                     title="Preferences"
                 >
                     <Settings size={24} color="#00FFCC" />
+                </motion.button>
+
+                {/* Government Files Button */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowGovFiles(true)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.3))',
+                        border: '2px solid #3b82f6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
+                    }}
+                    title="Government Files"
+                >
+                    <Folder size={24} color="#3b82f6" />
+                </motion.button>
+
+                {/* Admin Dashboard Button */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowAdmin(true)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 165, 0, 0.3))',
+                        border: '2px solid #FFA500',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(255, 165, 0, 0.4)'
+                    }}
+                    title="Admin Dashboard"
+                >
+                    <ShieldCheck size={24} color="#FFA500" />
                 </motion.button>
             </div>
 
@@ -232,6 +340,24 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
             {showPreferences && (
                 <UserPreferences onClose={() => setShowPreferences(false)} />
             )}
+
+            {showContact && (
+                <ContactUs onBack={() => setShowContact(false)} />
+            )}
+
+            {showAdmin && (
+                <AdminDashboard onClose={() => setShowAdmin(false)} />
+            )}
+
+            {showGovFiles && (
+                <GovernmentFiles onBack={() => setShowGovFiles(false)} />
+            )}
+
+            {/* Notification Center */}
+            <NotificationCenter
+                isOpen={showNotifications}
+                onClose={() => setShowNotifications(false)}
+            />
 
             {/* Mobile Menu Toggle */}
             <div style={{
