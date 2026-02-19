@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import {
-    Globe, LogOut, Search, AlertTriangle, Shield, DollarSign,
+    Globe, LogOut, AlertTriangle, Shield, DollarSign,
     Users, TrendingUp, Flag, MapPin, Zap, Target, Activity,
     Cpu, Radio, ShieldCheck, Bomb, Award, BarChart3
 } from 'lucide-react';
@@ -13,7 +13,6 @@ const geoUrl = "https://raw.githubusercontent.com/lotusms/world-map-data/master/
 const Dashboard = ({ agentName = "AGENT SUVANWIT", onLogout }) => {
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [hoveredCountry, setHoveredCountry] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
     const [currentTime, setCurrentTime] = useState(new Date());
 
     // Update time every second
@@ -55,9 +54,7 @@ const Dashboard = ({ agentName = "AGENT SUVANWIT", onLogout }) => {
         return "#020617";
     };
 
-    const filteredCountries = Object.values(countryData).filter(country =>
-        country.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+
 
     return (
         <div className="h-screen w-full bg-[#020617] text-[#00FFCC] overflow-hidden font-sans relative">
@@ -153,42 +150,7 @@ const Dashboard = ({ agentName = "AGENT SUVANWIT", onLogout }) => {
                         </ComposableMap>
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="absolute top-8 left-8 w-80 z-20">
-                        <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#00FFCC]/40" size={18} />
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search country..."
-                                className="w-full py-3 pl-12 pr-4 bg-black/60 backdrop-blur-md border border-[#00FFCC]/20 text-[#00FFCC] placeholder-[#00FFCC]/30 outline-none focus:border-[#00FFCC] transition-all text-sm font-mono uppercase"
-                            />
-                        </div>
 
-                        {/* Search Results */}
-                        {searchQuery && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mt-2 bg-black/80 backdrop-blur-md border border-[#00FFCC]/20 max-h-60 overflow-y-auto"
-                            >
-                                {filteredCountries.map((country) => (
-                                    <button
-                                        key={country.code}
-                                        onClick={() => {
-                                            setSelectedCountry(country);
-                                            setSearchQuery("");
-                                        }}
-                                        className="w-full px-4 py-3 text-left hover:bg-[#00FFCC]/10 transition-colors border-b border-[#00FFCC]/10 last:border-b-0"
-                                    >
-                                        <p className="text-white font-bold text-sm">{country.name}</p>
-                                        <p className="text-[#00FFCC]/60 text-xs font-mono uppercase">{country.capital}</p>
-                                    </button>
-                                ))}
-                            </motion.div>
-                        )}
-                    </div>
 
                     {/* Selected Country Indicator */}
                     {selectedCountry && (
@@ -393,8 +355,8 @@ const Dashboard = ({ agentName = "AGENT SUVANWIT", onLogout }) => {
                                                     <span className="text-[8px] text-[#00FFCC]/40 font-mono">{intel.date}</span>
                                                     <span
                                                         className={`text-[8px] font-bold uppercase px-2 py-0.5 ${intel.priority === 'CRITICAL' ? 'bg-red-500/20 text-red-400' :
-                                                                intel.priority === 'HIGH' ? 'bg-amber-500/20 text-amber-400' :
-                                                                    'bg-[#00FFCC]/20 text-[#00FFCC]'
+                                                            intel.priority === 'HIGH' ? 'bg-amber-500/20 text-amber-400' :
+                                                                'bg-[#00FFCC]/20 text-[#00FFCC]'
                                                             }`}
                                                     >
                                                         {intel.priority}

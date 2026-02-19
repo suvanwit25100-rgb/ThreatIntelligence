@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     FileText, Folder, Lock, Shield, Rocket, Zap, Building2,
     Factory, Plane, Ship, Radio, Atom, Satellite, ChevronRight,
-    Download, Eye, Search, ArrowLeft, AlertTriangle, ShieldCheck
+    Download, Eye, Search, ArrowLeft, AlertTriangle, ShieldCheck,
+    Target, Anchor, Wind
 } from 'lucide-react';
 
 // Government Ministries and National Assets Data

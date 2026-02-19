@@ -14,6 +14,7 @@ import ContactUs from './ContactUs';
 import AdminDashboard from './AdminDashboard';
 import GovernmentFiles from './GovernmentFiles';
 import NotificationCenter from './NotificationCenter';
+
 import { useApp } from '../context/AppContext';
 
 const EnhancedDashboard = ({ agentName, onLogout }) => {
@@ -27,6 +28,7 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
     const [showAdmin, setShowAdmin] = useState(false);
     const [showGovFiles, setShowGovFiles] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const [activeFilters, setActiveFilters] = useState({});
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -228,6 +230,8 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
                     <Folder size={24} color="#3b82f6" />
                 </motion.button>
 
+
+
                 {/* Admin Dashboard Button */}
                 <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -352,6 +356,8 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
             {showGovFiles && (
                 <GovernmentFiles onBack={() => setShowGovFiles(false)} />
             )}
+
+
 
             {/* Notification Center */}
             <NotificationCenter
