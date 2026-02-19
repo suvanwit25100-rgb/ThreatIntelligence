@@ -4,7 +4,8 @@ import {
     FileText, Folder, Lock, Shield, Rocket, Zap, Building2,
     Factory, Plane, Ship, Radio, Atom, Satellite, ChevronRight,
     Download, Eye, Search, ArrowLeft, AlertTriangle, ShieldCheck,
-    Target, Anchor, Wind
+    Target, Anchor, Wind,
+
 } from 'lucide-react';
 
 // Government Ministries and National Assets Data
@@ -178,6 +179,50 @@ const governmentData = {
                 { name: 'Electronic_Warfare_Tech.pdf', size: '13.4 MB', classification: 'TOP SECRET', date: '2026-02-03' },
                 { name: 'Avionics_Systems.pdf', size: '8.7 MB', classification: 'SECRET', date: '2026-01-29' },
                 { name: 'Export_Achievements.pdf', size: '6.1 MB', classification: 'CONFIDENTIAL', date: '2026-01-24' }
+            ]
+        }
+    ],
+    armedForces: [
+        {
+            id: 'army',
+            name: 'Indian Army',
+            icon: Target,
+            color: '#4b5320',
+            classification: 'TOP SECRET',
+            files: [
+                { name: 'Border_Deployment_Strategy.pdf', size: '14.2 MB', classification: 'TOP SECRET', date: '2026-02-18' },
+                { name: 'Mountain_Warfare_Tactics.pdf', size: '11.5 MB', classification: 'SECRET', date: '2026-02-12' },
+                { name: 'Infantry_Modernization.pdf', size: '9.8 MB', classification: 'CONFIDENTIAL', date: '2026-02-05' },
+                { name: 'Artillery_Procurement_Plan.pdf', size: '7.4 MB', classification: 'SECRET', date: '2026-01-28' },
+                { name: 'Surgical_Strike_Protocols.pdf', size: '5.1 MB', classification: 'TOP SECRET', date: '2026-01-20' }
+            ]
+        },
+        {
+            id: 'navy',
+            name: 'Indian Navy',
+            icon: Anchor,
+            color: '#000080',
+            classification: 'SECRET',
+            files: [
+                { name: 'Indo_Pacific_Strategy.pdf', size: '13.6 MB', classification: 'SECRET', date: '2026-02-17' },
+                { name: 'Submarine_Fleet_Expansion.pdf', size: '10.9 MB', classification: 'TOP SECRET', date: '2026-02-10' },
+                { name: 'Carrier_Battle_Group_Ops.pdf', size: '15.4 MB', classification: 'SECRET', date: '2026-02-03' },
+                { name: 'Maritime_Surveillance_Net.pdf', size: '8.2 MB', classification: 'CONFIDENTIAL', date: '2026-01-27' },
+                { name: 'Anti_Piracy_Operations.pdf', size: '6.7 MB', classification: 'UNCLASSIFIED', date: '2026-01-19' }
+            ]
+        },
+        {
+            id: 'airforce',
+            name: 'Indian Air Force',
+            icon: Wind,
+            color: '#87CEEB',
+            classification: 'TOP SECRET',
+            files: [
+                { name: 'Air_Superiority_Doctrine.pdf', size: '12.8 MB', classification: 'TOP SECRET', date: '2026-02-16' },
+                { name: 'Next_Gen_Fighter_Specs.pdf', size: '14.5 MB', classification: 'SECRET', date: '2026-02-09' },
+                { name: 'Drone_Swarm_Capabilities.pdf', size: '9.3 MB', classification: 'TOP SECRET', date: '2026-02-02' },
+                { name: 'Strategic_Airlift_Review.pdf', size: '7.9 MB', classification: 'CONFIDENTIAL', date: '2026-01-26' },
+                { name: 'Space_Warfare_Integration.pdf', size: '6.4 MB', classification: 'SECRET', date: '2026-01-18' }
             ]
         }
     ]
@@ -647,6 +692,42 @@ FOREIGN MISSIONS IN INDIA: 168
 
 [END OF DOCUMENT]
             `.trim();
+        } else if (file.name.includes('Army') || file.name.includes('Navy') || file.name.includes('Air_Force') ||
+            file.name.includes('Border') || file.name.includes('Maritime') || file.name.includes('Fighter') ||
+            file.name.includes('Deployment') || file.name.includes('Submarine') || file.name.includes('Strategy')) {
+            return `
+CLASSIFICATION: ${file.classification}
+DOCUMENT ID: AF-${docId}
+ISSUED: ${file.date}
+AUTHORITY: ${orgName}
+
+═══════════════════════════════════════════════════════════════
+
+ARMED FORCES STRATEGIC REPORT
+
+SUBJECT: ${file.name.replace(/_/g, ' ').replace('.pdf', '')}
+
+SECTION 1: MISSION OBJECTIVES
+─────────────────────────────────────────────────────────────────
+• Operational Readiness: 98%
+• Deployment Status: Active
+• Threat Level: ELEVATED
+
+SECTION 2: TACTICAL ASSESSMENT
+─────────────────────────────────────────────────────────────────
+Recent surveillance indicates increased activity in sector 4.
+Counter-measures have been deployed effectively.
+Losses: None reported.
+Success Rate: 100%
+
+SECTION 3: RESOURCE ALLOCATION
+─────────────────────────────────────────────────────────────────
+• Personnel: Full strength
+• Logistical Support: Secure chain established
+• Munitions: Stockpile adequate for 45 days sustained operations
+
+[TOP SECRET - EYES ONLY]
+            `.trim();
         } else {
             // Generic government document
             return `
@@ -730,7 +811,8 @@ NEXT REVIEW: ${new Date(new Date(file.date).getTime() + 90 * 24 * 60 * 60 * 1000
 
     const allOrganizations = [
         { category: 'Ministries', items: governmentData.ministries },
-        { category: 'National Assets', items: governmentData.nationalAssets }
+        { category: 'National Assets', items: governmentData.nationalAssets },
+        { category: 'Armed Forces', items: governmentData.armedForces }
     ];
 
     const filteredOrgs = selectedCategory
