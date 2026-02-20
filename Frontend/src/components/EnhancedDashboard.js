@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X, Mail, ShieldCheck, Folder, Bell, Swords, Shield, Map, Plane, Satellite, Eye, Atom, Wrench, Brain, ChevronUp } from 'lucide-react';
+import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X, Mail, ShieldCheck, Folder, Bell, Swords, Shield, Map, Plane, Satellite, Eye, Atom, Wrench, Brain, ChevronUp, UserPlus } from 'lucide-react';
 import Dashboard from './Dashboard';
 import SearchFilter from './SearchFilter';
 import FilterPanel from './FilterPanel';
@@ -26,7 +26,7 @@ import ThreatPrediction from './ThreatPrediction';
 
 import { useApp } from '../context/AppContext';
 
-const EnhancedDashboard = ({ agentName, onLogout }) => {
+const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
     const { alerts, favorites } = useApp();
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [showComparison, setShowComparison] = useState(false);
@@ -271,6 +271,28 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
                     title="Armed Forces Command"
                 >
                     <Swords size={24} color="#DC2626" />
+                </motion.button>
+
+                {/* Agent Portal Button — Navigates to separate page */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => onNavigate && onNavigate('agentPortal')}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(167, 139, 250, 0.4))',
+                        border: '2px solid #A78BFA',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(167, 139, 250, 0.5)'
+                    }}
+                    title="Agent Operations Portal"
+                >
+                    <UserPlus size={24} color="#A78BFA" />
                 </motion.button>
 
                 {/* Admin Dashboard Button */}
