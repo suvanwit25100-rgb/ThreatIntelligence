@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X, Mail, ShieldCheck, Folder, Bell } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Settings, FileText, ArrowLeftRight, BarChart3, Menu, X, Mail, ShieldCheck, Folder, Bell, Swords, Shield, Map, Plane, Satellite, Eye, Atom, Wrench, Brain, ChevronUp } from 'lucide-react';
 import Dashboard from './Dashboard';
 import SearchFilter from './SearchFilter';
 import FilterPanel from './FilterPanel';
@@ -14,6 +14,15 @@ import ContactUs from './ContactUs';
 import AdminDashboard from './AdminDashboard';
 import GovernmentFiles from './GovernmentFiles';
 import NotificationCenter from './NotificationCenter';
+import ArmedForcesCommand from './ArmedForcesCommand';
+import CyberWarfareCommand from './CyberWarfareCommand';
+import WarRoomPlanner from './WarRoomPlanner';
+import DroneCommand from './DroneCommand';
+import SpaceCommand from './SpaceCommand';
+import SpyNetwork from './SpyNetwork';
+import NuclearCommand from './NuclearCommand';
+import DefenseProjects from './DefenseProjects';
+import ThreatPrediction from './ThreatPrediction';
 
 import { useApp } from '../context/AppContext';
 
@@ -28,6 +37,16 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
     const [showAdmin, setShowAdmin] = useState(false);
     const [showGovFiles, setShowGovFiles] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showArmedForces, setShowArmedForces] = useState(false);
+    const [showCyberWarfare, setShowCyberWarfare] = useState(false);
+    const [showWarRoom, setShowWarRoom] = useState(false);
+    const [showDroneCommand, setShowDroneCommand] = useState(false);
+    const [showSpaceCommand, setShowSpaceCommand] = useState(false);
+    const [showSpyNetwork, setShowSpyNetwork] = useState(false);
+    const [showNuclearCommand, setShowNuclearCommand] = useState(false);
+    const [showDefenseProjects, setShowDefenseProjects] = useState(false);
+    const [showThreatPrediction, setShowThreatPrediction] = useState(false);
+    const [showCommandHub, setShowCommandHub] = useState(false);
 
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const [activeFilters, setActiveFilters] = useState({});
@@ -232,6 +251,28 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
 
 
 
+                {/* Armed Forces Command Button */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowArmedForces(true)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(220, 38, 38, 0.4))',
+                        border: '2px solid #DC2626',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(220, 38, 38, 0.5)'
+                    }}
+                    title="Armed Forces Command"
+                >
+                    <Swords size={24} color="#DC2626" />
+                </motion.button>
+
                 {/* Admin Dashboard Button */}
                 <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -357,13 +398,140 @@ const EnhancedDashboard = ({ agentName, onLogout }) => {
                 <GovernmentFiles onBack={() => setShowGovFiles(false)} />
             )}
 
+            {showArmedForces && (
+                <ArmedForcesCommand onBack={() => setShowArmedForces(false)} />
+            )}
 
+            {showCyberWarfare && (
+                <CyberWarfareCommand onBack={() => setShowCyberWarfare(false)} />
+            )}
+
+            {showWarRoom && (
+                <WarRoomPlanner onBack={() => setShowWarRoom(false)} />
+            )}
+
+            {showDroneCommand && (
+                <DroneCommand onBack={() => setShowDroneCommand(false)} />
+            )}
+
+            {showSpaceCommand && (
+                <SpaceCommand onBack={() => setShowSpaceCommand(false)} />
+            )}
+
+            {showSpyNetwork && (
+                <SpyNetwork onBack={() => setShowSpyNetwork(false)} />
+            )}
+
+            {showNuclearCommand && (
+                <NuclearCommand onBack={() => setShowNuclearCommand(false)} />
+            )}
+
+            {showDefenseProjects && (
+                <DefenseProjects onBack={() => setShowDefenseProjects(false)} />
+            )}
+
+            {showThreatPrediction && (
+                <ThreatPrediction onBack={() => setShowThreatPrediction(false)} />
+            )}
 
             {/* Notification Center */}
             <NotificationCenter
                 isOpen={showNotifications}
                 onClose={() => setShowNotifications(false)}
             />
+
+            {/* Command Hub — Left Side */}
+            <div style={{
+                position: 'fixed',
+                bottom: '24px',
+                left: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '8px',
+                zIndex: 1000
+            }}>
+                <AnimatePresence>
+                    {showCommandHub && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '8px',
+                                marginBottom: '8px',
+                                padding: '12px',
+                                background: 'rgba(2, 6, 23, 0.95)',
+                                border: '1px solid rgba(0, 255, 204, 0.3)',
+                                borderRadius: '16px',
+                                backdropFilter: 'blur(20px)'
+                            }}
+                        >
+                            {[
+                                { label: 'CYBER', icon: Shield, color: '#34D399', action: () => setShowCyberWarfare(true) },
+                                { label: 'WAR ROOM', icon: Map, color: '#FBBF24', action: () => setShowWarRoom(true) },
+                                { label: 'DRONES', icon: Plane, color: '#60A5FA', action: () => setShowDroneCommand(true) },
+                                { label: 'SPACE', icon: Satellite, color: '#A78BFA', action: () => setShowSpaceCommand(true) },
+                                { label: 'INTEL', icon: Eye, color: '#F87171', action: () => setShowSpyNetwork(true) },
+                                { label: 'NUCLEAR', icon: Atom, color: '#FBBF24', action: () => setShowNuclearCommand(true) },
+                                { label: 'PROJECTS', icon: Wrench, color: '#00FFCC', action: () => setShowDefenseProjects(true) },
+                                { label: 'AI THREAT', icon: Brain, color: '#F472B6', action: () => setShowThreatPrediction(true) },
+                            ].map((item) => (
+                                <motion.button
+                                    key={item.label}
+                                    whileHover={{ scale: 1.08, boxShadow: `0 0 20px ${item.color}44` }}
+                                    whileTap={{ scale: 0.92 }}
+                                    onClick={() => { item.action(); setShowCommandHub(false); }}
+                                    style={{
+                                        width: '72px',
+                                        height: '72px',
+                                        borderRadius: '12px',
+                                        background: `${item.color}15`,
+                                        border: `1.5px solid ${item.color}66`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '4px',
+                                        cursor: 'pointer',
+                                        padding: 0
+                                    }}
+                                >
+                                    <item.icon size={22} color={item.color} />
+                                    <span style={{ fontSize: '7px', color: item.color, fontFamily: 'Orbitron, monospace', letterSpacing: '0.5px' }}>{item.label}</span>
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowCommandHub(!showCommandHub)}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: showCommandHub
+                            ? 'linear-gradient(135deg, rgba(0, 255, 204, 0.3), rgba(0, 255, 204, 0.5))'
+                            : 'linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(0, 255, 204, 0.2))',
+                        border: '2px solid #00FFCC',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: showCommandHub ? '0 0 24px rgba(0, 255, 204, 0.5)' : '0 4px 12px rgba(0, 0, 0, 0.3)'
+                    }}
+                    title="Command Hub"
+                >
+                    <motion.div animate={{ rotate: showCommandHub ? 180 : 0 }}>
+                        <ChevronUp size={24} color="#00FFCC" />
+                    </motion.div>
+                </motion.button>
+            </div>
 
             {/* Mobile Menu Toggle */}
             <div style={{
