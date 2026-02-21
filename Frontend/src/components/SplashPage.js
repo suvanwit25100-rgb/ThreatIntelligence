@@ -148,37 +148,7 @@ const SplashPage = ({ onLaunch }) => {
     return () => clearInterval(interval);
   }, [isDead, isRebooting]);
 
-  // 3b. Agent Name Typing Effect
-  useEffect(() => {
-    if (isDead || isRebooting) return;
-    let i = 0;
-    const fullName = "AGENT SUVANWIT";
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        setAgentName(fullName.slice(0, i));
-        i++;
-        if (i > fullName.length) clearInterval(interval);
-      }, 80);
-      return () => clearInterval(interval);
-    }, 1200);
-    return () => clearTimeout(timeout);
-  }, [isDead, isRebooting]);
-
-  // 3c. Mission Brief Typing Effect
-  useEffect(() => {
-    if (isDead || isRebooting) return;
-    let i = 0;
-    const fullBrief = "STRATEGIC INTELLIGENCE OPERATIONS CLEARANCE VERIFIED";
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        setMissionBrief(fullBrief.slice(0, i));
-        i++;
-        if (i > fullBrief.length) clearInterval(interval);
-      }, 40);
-      return () => clearInterval(interval);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, [isDead, isRebooting]);
+  // 3c. Mission Brief replaced by static label
 
   // 4. Emergency Sound Control (simplified)
   useEffect(() => {
@@ -373,130 +343,7 @@ const SplashPage = ({ onLaunch }) => {
         )}
       </AnimatePresence>
 
-      {/* --- LIVE DATA PANELS (RIGHT SIDE) --- */}
-      <div className={`absolute right-12 top-32 w-80 space-y-4 z-50 font-mono transition-opacity ${isDead || isRebooting || showAuth || isLocked ? 'opacity-0' : 'opacity-100'}`}>
 
-        {/* Network Traffic Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="border border-[#00FFCC]/20 bg-black/40 backdrop-blur-md p-6"
-        >
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#00FFCC]/10">
-            <Radio className="text-[#00FFCC]" size={16} />
-            <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">Network_Traffic</p>
-          </div>
-          <div className="space-y-3 text-[9px]">
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Incoming</span>
-              <span className="text-emerald-400 font-bold tabular-nums">{networkTraffic.incoming.toLocaleString()} MB/s</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Outgoing</span>
-              <span className="text-[#00FFCC] font-bold tabular-nums">{networkTraffic.outgoing.toLocaleString()} MB/s</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Threats_Blocked</span>
-              <span className="text-red-400 font-bold tabular-nums">{networkTraffic.threats}</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Satellite Telemetry Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="border border-[#00FFCC]/20 bg-black/40 backdrop-blur-md p-6"
-        >
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#00FFCC]/10">
-            <MapPin className="text-[#00FFCC]" size={16} />
-            <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">Satellite_INDRA-7</p>
-          </div>
-          <div className="space-y-3 text-[9px]">
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Altitude</span>
-              <span className="text-[#00FFCC] font-bold tabular-nums">{satelliteData.altitude.toFixed(1)} km</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Velocity</span>
-              <span className="text-[#00FFCC] font-bold tabular-nums">{satelliteData.velocity} km/s</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[#00FFCC]/60 uppercase">Coverage</span>
-              <span className="text-emerald-400 font-bold tabular-nums">{satelliteData.coverage.toFixed(0)}%</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Threat Assessment Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-          className="border border-[#00FFCC]/20 bg-black/40 backdrop-blur-md p-6"
-        >
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#00FFCC]/10">
-            <ShieldAlert className="text-amber-400" size={16} />
-            <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">Threat_Assessment</p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-[9px] mb-2">
-              <span className="text-[#00FFCC]/60 uppercase">Current_Level</span>
-              <span className={`font-bold tabular-nums ${threatLevel < 30 ? 'text-emerald-400' : threatLevel < 60 ? 'text-amber-400' : 'text-red-400'}`}>
-                {threatLevel.toFixed(0)}%
-              </span>
-            </div>
-            <div className="w-full h-2 bg-[#00FFCC]/10 rounded-full overflow-hidden">
-              <motion.div
-                className={`h-full ${threatLevel < 30 ? 'bg-emerald-500' : threatLevel < 60 ? 'bg-amber-500' : 'bg-red-500'}`}
-                style={{ width: `${threatLevel}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* System Diagnostics Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="border border-[#00FFCC]/20 bg-black/40 backdrop-blur-md p-6"
-        >
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#00FFCC]/10">
-            <Cpu className="text-[#00FFCC]" size={16} />
-            <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">System_Diagnostics</p>
-          </div>
-          <div className="space-y-3 text-[9px]">
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[#00FFCC]/60 uppercase">Memory</span>
-                <span className="text-[#00FFCC] font-bold tabular-nums">{systemDiagnostics.memory.toFixed(0)}%</span>
-              </div>
-              <div className="w-full h-1 bg-[#00FFCC]/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#00FFCC]" style={{ width: `${systemDiagnostics.memory}%` }} />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[#00FFCC]/60 uppercase">Disk</span>
-                <span className="text-[#00FFCC] font-bold tabular-nums">{systemDiagnostics.disk.toFixed(0)}%</span>
-              </div>
-              <div className="w-full h-1 bg-[#00FFCC]/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#00FFCC]" style={{ width: `${systemDiagnostics.disk}%` }} />
-              </div>
-            </div>
-            <div className="flex justify-between items-center pt-2 border-t border-[#00FFCC]/10">
-              <span className="text-[#00FFCC]/60 uppercase">Temperature</span>
-              <span className={`font-bold tabular-nums ${systemDiagnostics.temp > 60 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                {systemDiagnostics.temp.toFixed(0)}°C
-              </span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
 
       {/* --- CENTRAL INTERFACE --- */}
       <motion.div animate={{ opacity: showAuth || isLocked || isDead || isRebooting ? 0.02 : 1 }} className="text-center z-30 pointer-events-none">
@@ -666,8 +513,8 @@ const SplashPage = ({ onLaunch }) => {
                             },
                             user: {
                               id: new Uint8Array(16).map(() => Math.floor(Math.random() * 256)),
-                              name: "agent.suvanwit@raw.gov.in",
-                              displayName: "AGENT SUVANWIT"
+                              name: "agent@raw.gov.in",
+                              displayName: "AUTHORIZED AGENT"
                             },
                             pubKeyCredParams: [{ alg: -7, type: "public-key" }],
                             authenticatorSelection: {
@@ -817,100 +664,7 @@ const SplashPage = ({ onLaunch }) => {
         )}
       </AnimatePresence>
 
-      {/* --- WELCOME AGENT PANEL --- */}
-      <AnimatePresence>
-        {!isDead && !isRebooting && (
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: showAuth || isLocked ? 0.1 : 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="absolute left-12 top-32 w-80 z-50 font-mono"
-          >
-            {/* Main Panel */}
-            <div className="border border-[#00FFCC]/20 bg-black/40 backdrop-blur-md p-8 shadow-2xl">
-              {/* Header */}
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#00FFCC]/10">
-                <Fingerprint className="text-[#00FFCC]" size={24} />
-                <div className="flex-1">
-                  <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase mb-1">Identity_Verified</p>
-                  <h3 className="text-xl font-black text-[#00FFCC] uppercase tracking-tight">
-                    {agentName}<span className="animate-pulse">_</span>
-                  </h3>
-                </div>
-              </div>
 
-              {/* Clearance Level */}
-              <div className="mb-6 pb-6 border-b border-[#00FFCC]/10">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">Clearance_Level</p>
-                  <ShieldCheck className="text-emerald-400" size={16} />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-1.5 bg-[#00FFCC]/10 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: '100%' }}
-                      transition={{ duration: 2, delay: 1.5 }}
-                      className="h-full bg-gradient-to-r from-emerald-500 to-[#00FFCC] shadow-[0_0_10px_#00FFCC]"
-                    />
-                  </div>
-                  <span className="text-emerald-400 font-black text-xs">OMEGA</span>
-                </div>
-              </div>
-
-              {/* Mission Status */}
-              <div className="mb-6 pb-6 border-b border-[#00FFCC]/10">
-                <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase mb-3">Mission_Status</p>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[9px]">
-                    <span className="text-[#00FFCC]/60 uppercase">Active_Ops</span>
-                    <span className="text-[#00FFCC] font-bold tabular-nums">07</span>
-                  </div>
-                  <div className="flex items-center justify-between text-[9px]">
-                    <span className="text-[#00FFCC]/60 uppercase">Completed</span>
-                    <span className="text-emerald-400 font-bold tabular-nums">142</span>
-                  </div>
-                  <div className="flex items-center justify-between text-[9px]">
-                    <span className="text-[#00FFCC]/60 uppercase">Success_Rate</span>
-                    <span className="text-emerald-400 font-bold tabular-nums">98.7%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tactical Brief */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle className="text-amber-400" size={12} />
-                  <p className="text-[8px] tracking-[0.3em] text-[#00FFCC]/40 uppercase">Tactical_Brief</p>
-                </div>
-                <p className="text-[9px] leading-relaxed text-[#00FFCC]/70 uppercase tracking-wide min-h-[3rem]">
-                  {missionBrief}<span className="animate-pulse">_</span>
-                </p>
-              </div>
-
-              {/* Status Indicator */}
-              <div className="mt-6 pt-6 border-t border-[#00FFCC]/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    animate={{ opacity: [1, 0.3, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="h-2 w-2 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)]"
-                  />
-                  <span className="text-[8px] text-emerald-400 font-bold uppercase tracking-widest">Online</span>
-                </div>
-                <Cpu className="text-[#00FFCC]/20" size={14} />
-              </div>
-            </div>
-
-            {/* Decorative Corner Brackets */}
-            <div className="absolute -top-2 -left-2 w-4 h-4 border-l-2 border-t-2 border-[#00FFCC]/40" />
-            <div className="absolute -top-2 -right-2 w-4 h-4 border-r-2 border-t-2 border-[#00FFCC]/40" />
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 border-l-2 border-b-2 border-[#00FFCC]/40" />
-            <div className="absolute -bottom-2 -right-2 w-4 h-4 border-r-2 border-b-2 border-[#00FFCC]/40" />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* --- TACTICAL LOG PANEL --- */}
       <div className={`absolute left-12 bottom-56 w-72 h-36 z-50 overflow-hidden text-[9px] border-l border-[#00FFCC]/10 pl-6 bg-black/20 transition-opacity font-mono ${isDead || isRebooting ? 'opacity-0' : 'opacity-100'}`}>

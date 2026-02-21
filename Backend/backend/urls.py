@@ -35,4 +35,5 @@ urlpatterns = [
     path('api/', include('comms.urls')),
     path('api/', include('files.urls')),
     path('api/admin/stats/', admin_stats, name='admin-stats'),
+    path('api/ml/', include('ml.urls')),
 ]

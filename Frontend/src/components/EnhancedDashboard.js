@@ -23,6 +23,8 @@ import SpyNetwork from './SpyNetwork';
 import NuclearCommand from './NuclearCommand';
 import DefenseProjects from './DefenseProjects';
 import ThreatPrediction from './ThreatPrediction';
+import MLInsightsPanel from './MLInsightsPanel';
+import DashboardFooter from './DashboardFooter';
 
 import { useApp } from '../context/AppContext';
 
@@ -46,7 +48,9 @@ const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
     const [showNuclearCommand, setShowNuclearCommand] = useState(false);
     const [showDefenseProjects, setShowDefenseProjects] = useState(false);
     const [showThreatPrediction, setShowThreatPrediction] = useState(false);
+    const [showMLInsights, setShowMLInsights] = useState(false);
     const [showCommandHub, setShowCommandHub] = useState(false);
+    const [showRightHub, setShowRightHub] = useState(false);
 
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const [activeFilters, setActiveFilters] = useState({});
@@ -62,261 +66,131 @@ const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
     };
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', width: '100%', height: '100vh', overflowX: 'hidden', overflowY: 'auto', background: '#020617' }}>
+            <style>
+                {`
+                    @keyframes spin-slow {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                    @keyframes spin-reverse {
+                        from { transform: rotate(360deg); }
+                        to { transform: rotate(0deg); }
+                    }
+                    .animate-spin-slow {
+                        animation: spin-slow 8s linear infinite;
+                    }
+                    .animate-reverse-spin {
+                        animation: spin-reverse 5s linear infinite;
+                    }
+                    .animate-spin-fast {
+                        animation: spin-slow 3s linear infinite;
+                    }
+                `}
+            </style>
             {/* Alert System */}
             <AlertSystem alerts={alerts} />
 
             {/* Main Dashboard */}
             <Dashboard agentName={agentName} onLogout={onLogout} />
 
-            {/* Floating Action Buttons */}
+            {/* Right-Side Quick-Access Panel */}
             <div style={{
                 position: 'fixed',
                 bottom: '24px',
                 right: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '12px',
+                alignItems: 'flex-end',
+                gap: '8px',
                 zIndex: 1000
             }}>
-                {/* Analytics Button */}
+                <AnimatePresence>
+                    {showRightHub && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr 1fr',
+                                gap: '8px',
+                                marginBottom: '8px',
+                                padding: '12px',
+                                background: 'rgba(2, 6, 23, 0.95)',
+                                border: '1px solid rgba(0, 255, 204, 0.3)',
+                                borderRadius: '16px',
+                                backdropFilter: 'blur(20px)'
+                            }}
+                        >
+                            {[
+                                { label: 'ANALYTICS', icon: BarChart3, color: '#00FFCC', action: () => setShowAnalytics(!showAnalytics) },
+                                { label: 'ALERTS', icon: Bell, color: '#FFA500', action: () => setShowNotifications(true) },
+                                { label: 'CONTACT', icon: Mail, color: '#00FFCC', action: () => setShowContact(true) },
+                                { label: 'COMPARE', icon: ArrowLeftRight, color: '#60A5FA', action: () => setShowComparison(true) },
+                                ...(selectedCountry ? [{ label: 'REPORT', icon: FileText, color: '#34D399', action: () => setShowReport(true) }] : []),
+                                { label: 'SETTINGS', icon: Settings, color: '#A78BFA', action: () => setShowPreferences(true) },
+                                { label: 'GOV FILES', icon: Folder, color: '#3b82f6', action: () => setShowGovFiles(true) },
+                                { label: 'MILITARY', icon: Swords, color: '#DC2626', action: () => setShowArmedForces(true) },
+                                { label: 'AGENTS', icon: UserPlus, color: '#A78BFA', action: () => onNavigate && onNavigate('agentPortal') },
+                                { label: 'ML ENGINE', icon: Brain, color: '#00FFCC', action: () => setShowMLInsights(true) },
+                                { label: 'ADMIN', icon: ShieldCheck, color: '#FFA500', action: () => setShowAdmin(true) },
+                            ].map((item) => (
+                                <motion.button
+                                    key={item.label}
+                                    whileHover={{ scale: 1.08, boxShadow: `0 0 20px ${item.color}44` }}
+                                    whileTap={{ scale: 0.92 }}
+                                    onClick={() => { item.action(); setShowCommandHub(false); }}
+                                    style={{
+                                        width: '72px',
+                                        height: '72px',
+                                        borderRadius: '12px',
+                                        background: `${item.color}15`,
+                                        border: `1.5px solid ${item.color}66`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '4px',
+                                        cursor: 'pointer',
+                                        padding: 0
+                                    }}
+                                >
+                                    <item.icon size={22} color={item.color} />
+                                    <span style={{ fontSize: '7px', color: item.color, fontFamily: 'Orbitron, monospace', letterSpacing: '0.5px' }}>{item.label}</span>
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Single toggle trigger */}
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowAnalytics(!showAnalytics)}
+                    onClick={() => setShowRightHub(!showRightHub)}
                     style={{
                         width: '56px',
                         height: '56px',
                         borderRadius: '50%',
-                        background: showAnalytics ? 'rgba(0, 255, 204, 0.3)' : 'rgba(0, 255, 204, 0.1)',
+                        background: showRightHub
+                            ? 'linear-gradient(135deg, rgba(0, 255, 204, 0.35), rgba(0, 255, 204, 0.55))'
+                            : 'linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(0, 255, 204, 0.2))',
                         border: '2px solid #00FFCC',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                        boxShadow: showRightHub ? '0 0 28px rgba(0, 255, 204, 0.6)' : '0 4px 12px rgba(0, 0, 0, 0.3)'
                     }}
-                    title="Analytics"
+                    title="Quick Access"
                 >
-                    <BarChart3 size={24} color="#00FFCC" />
-                </motion.button>
-
-                {/* Notification Bell Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowNotifications(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 165, 0, 0.2)',
-                        border: '2px solid #FFA500',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                        position: 'relative'
-                    }}
-                    title="Notifications"
-                >
-                    <Bell size={24} color="#FFA500" />
-                    {/* Unread indicator */}
-                    <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        width: '12px',
-                        height: '12px',
-                        borderRadius: '50%',
-                        background: '#ff0000',
-                        border: '2px solid #020617'
-                    }} />
-                </motion.button>
-
-                {/* Contact Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowContact(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'rgba(0, 255, 204, 0.1)',
-                        border: '2px solid #00FFCC',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                    }}
-                    title="Contact Us"
-                >
-                    <Mail size={24} color="#00FFCC" />
-                </motion.button>
-
-                {/* Comparison Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowComparison(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'rgba(0, 255, 204, 0.1)',
-                        border: '2px solid #00FFCC',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                    }}
-                    title="Compare Countries"
-                >
-                    <ArrowLeftRight size={24} color="#00FFCC" />
-                </motion.button>
-
-                {/* Report Button */}
-                {selectedCountry && (
-                    <motion.button
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setShowReport(true)}
-                        style={{
-                            width: '56px',
-                            height: '56px',
-                            borderRadius: '50%',
-                            background: 'rgba(0, 255, 204, 0.1)',
-                            border: '2px solid #00FFCC',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                        }}
-                        title="Generate Report"
-                    >
-                        <FileText size={24} color="#00FFCC" />
-                    </motion.button>
-                )}
-
-                {/* Settings Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowPreferences(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'rgba(0, 255, 204, 0.1)',
-                        border: '2px solid #00FFCC',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                    }}
-                    title="Preferences"
-                >
-                    <Settings size={24} color="#00FFCC" />
-                </motion.button>
-
-                {/* Government Files Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowGovFiles(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.3))',
-                        border: '2px solid #3b82f6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
-                    }}
-                    title="Government Files"
-                >
-                    <Folder size={24} color="#3b82f6" />
-                </motion.button>
-
-
-
-                {/* Armed Forces Command Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowArmedForces(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(220, 38, 38, 0.4))',
-                        border: '2px solid #DC2626',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(220, 38, 38, 0.5)'
-                    }}
-                    title="Armed Forces Command"
-                >
-                    <Swords size={24} color="#DC2626" />
-                </motion.button>
-
-                {/* Agent Portal Button — Navigates to separate page */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => onNavigate && onNavigate('agentPortal')}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(167, 139, 250, 0.4))',
-                        border: '2px solid #A78BFA',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(167, 139, 250, 0.5)'
-                    }}
-                    title="Agent Operations Portal"
-                >
-                    <UserPlus size={24} color="#A78BFA" />
-                </motion.button>
-
-                {/* Admin Dashboard Button */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowAdmin(true)}
-                    style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 165, 0, 0.3))',
-                        border: '2px solid #FFA500',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(255, 165, 0, 0.4)'
-                    }}
-                    title="Admin Dashboard"
-                >
-                    <ShieldCheck size={24} color="#FFA500" />
+                    <motion.div animate={{ rotate: showRightHub ? 45 : 0 }} transition={{ duration: 0.2 }}>
+                        <Menu size={24} color="#00FFCC" />
+                    </motion.div>
                 </motion.button>
             </div>
+
 
             {/* Search & Filter Overlay */}
             <div style={{
@@ -456,6 +330,10 @@ const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
                 <ThreatPrediction onBack={() => setShowThreatPrediction(false)} />
             )}
 
+            {showMLInsights && (
+                <MLInsightsPanel onBack={() => setShowMLInsights(false)} />
+            )}
+
             {/* Notification Center */}
             <NotificationCenter
                 isOpen={showNotifications}
@@ -500,6 +378,7 @@ const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
                                 { label: 'NUCLEAR', icon: Atom, color: '#FBBF24', action: () => setShowNuclearCommand(true) },
                                 { label: 'PROJECTS', icon: Wrench, color: '#00FFCC', action: () => setShowDefenseProjects(true) },
                                 { label: 'AI THREAT', icon: Brain, color: '#F472B6', action: () => setShowThreatPrediction(true) },
+                                { label: 'ML ENGINE', icon: Brain, color: '#00FFCC', action: () => setShowMLInsights(true) },
                             ].map((item) => (
                                 <motion.button
                                     key={item.label}
@@ -587,6 +466,9 @@ const EnhancedDashboard = ({ agentName, onLogout, onNavigate }) => {
                     )}
                 </motion.button>
             </div>
+
+            {/* Dashboard Footer */}
+            <DashboardFooter />
         </div>
     );
 };

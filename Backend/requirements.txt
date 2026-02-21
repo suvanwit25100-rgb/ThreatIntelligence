@@ -8,3 +8,8 @@ newsapi-python>=0.2.7
 gunicorn>=21.2
 whitenoise>=6.6
 dj-database-url>=2.1
+# ML Dependencies
+scikit-learn>=1.4
+numpy>=1.26
+pandas>=2.1
+joblib>=1.3

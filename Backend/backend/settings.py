@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'comms',
     'files',
     'core',
+    'ml',
 ]
 
 MIDDLEWARE = [

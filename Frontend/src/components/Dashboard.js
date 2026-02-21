@@ -57,7 +57,7 @@ const Dashboard = ({ agentName = "AGENT SUVANWIT", onLogout }) => {
 
 
     return (
-        <div className="h-screen w-full bg-[#020617] text-[#00FFCC] overflow-hidden font-sans relative">
+        <div className="min-h-screen w-full bg-[#020617] text-[#00FFCC] font-sans relative">
             {/* Animated Background Grid */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
